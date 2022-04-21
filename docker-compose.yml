@@ -20,5 +20,20 @@ services:
       - ./frontend/:/var/www/
     env_file:
       - .env
+  parser:
+    container_name: 'parser'
+    build:
+      dockerfile: ../Dockerfiles/Parser.Dockerfile
+      context: ./parser
+    env_file:
+      - .env
+      - .alphavantage
+    expose:
+      - "88"
+    # Uncomment to access swagger
+    ports:
+      - "88:88"
+    volumes:
+      - ./parser/:/usr/src/parser/
 volumes:
   postgres_data:
