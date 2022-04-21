@@ -23,3 +23,10 @@ CREATE TABLE IF NOT EXISTS user_stocks (
     FOREIGN KEY (user_id) REFERENCES users(username),
     FOREIGN KEY (stock_symbol) REFERENCES stocks(symbol)
 );
+
+CREATE TABLE sessions (
+    username VARCHAR(50) NOT NULL,
+    session VARCHAR(32) PRIMARY KEY,
+
+    FOREIGN KEY (username) REFERENCES users(username)
+);

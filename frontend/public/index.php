@@ -1,6 +1,6 @@
 <?php
 if (!isset($_COOKIE["session"])) {
-    header("Location: /signup");
+    header("Location: /signin.php");
     exit();
 }
 ?>

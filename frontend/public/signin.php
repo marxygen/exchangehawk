@@ -16,10 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($USERNAME_ERROR) && empty($PASSWORD_ERROR)) {
-        if (!empty(run_sql_query("SELECT username FROM users WHERE username=$1", $username))) {
-            $USERNAME_ERROR = "This username is already taken";
+        $user = run_sql_query("SELECT username FROM users WHERE username=$1 AND password_hash=$2", $username, hash('sha256', $password));
+        if (empty($user)) {
+            $USERNAME_ERROR = "Account with this username and password does not exist";
         } else {
-            $result = run_sql_query("INSERT INTO users (username, password_hash) VALUES ($1,$2)", $username, hash('sha256', $password));
             $session = save_session($username);
             setcookie('session', $session);
             header("Location: /");
@@ -41,14 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="centered">
-        <h2><b>Create an account to proceed</b></h2>
-        <form action="/signup.php" method="POST">
+        <h2><b>Log in</b></h2>
+        <form action="/signin.php" method="POST">
             <?php echo "$USERNAME_ERROR<br>" ?>
             <input class="roundcorners" type="text" name="username" placeholder="Username" /><br><br>
             <?php echo "$PASSWORD_ERROR<br>" ?>
             <input class="roundcorners" type="password" name="password" placeholder="Password" /><br><br>
             <input class="roundcorners" type="submit" value="Submit" /><br>
         </form>
+        <br>
+        <a href="/signup.php"><b>Create an account</b></a>
     </div>
 </body>
 

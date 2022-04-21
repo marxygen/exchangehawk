@@ -1,4 +1,5 @@
 <?php
+
 function run_sql_query($query, ...$params)
 {
     $servername = $_ENV['POSTGRES_HOST'];
@@ -7,5 +8,7 @@ function run_sql_query($query, ...$params)
 
     $conn_string = "host=$servername port=5432 dbname=db user=$username password=$password";
     $dbconn = pg_connect($conn_string);
-    return pg_query_params($dbconn, $query, $params);
+
+    $result = pg_fetch_row(pg_query_params($dbconn, $query, $params));
+    return $result;
 }
