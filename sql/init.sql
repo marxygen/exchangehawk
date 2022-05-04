@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS stocks (
     symbol VARCHAR(8) PRIMARY KEY,
-    name VARCHAR(50),
-    price REAL
+    name VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS stock_prices (
@@ -30,3 +29,16 @@ CREATE TABLE sessions (
 
     FOREIGN KEY (username) REFERENCES users(username)
 );
+
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.timestamp = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON stock_prices
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();

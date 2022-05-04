@@ -35,5 +35,37 @@ services:
       - "88:88"
     volumes:
       - ./parser/:/usr/src/parser/
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    hostname: rabbitmq
+    user: root
+    container_name: rabbitmq
+    command: rabbitmq-server start
+    env_file:
+      - .env
+    expose:
+      - "5672"
+    volumes:
+      - ./rabbitmq/:/etc/rabbitmq/
+  celery:
+    user: root
+    restart: always
+    build:
+      dockerfile: ../Dockerfiles/Parser.Dockerfile
+      context: ./parser
+    container_name: celery
+    command: bash -c "sleep 10; celery -A tasks worker -B -E --loglevel=warning -f /logs/celery.log -l INFO"
+    volumes:
+      - .:/usr/src/
+      - ./logs/:/logs/
+      - ./sql/:/var/sqlscripts/
+    depends_on:
+      - parser
+      - rabbitmq
+    links:
+      - rabbitmq
+    env_file:
+      - .env
 volumes:
   postgres_data:

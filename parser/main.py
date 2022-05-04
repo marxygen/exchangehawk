@@ -6,5 +6,5 @@ app = FastAPI()
 
 @app.get("/get-price/{ticker}")
 def stock_price(ticker: str):
-    """Get stock price for given ticker"""
+    """Get current stock price for a given ticker"""
     return get_stock_prices(ticker)
