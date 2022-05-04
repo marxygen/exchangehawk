@@ -52,6 +52,7 @@ if (!isset($_COOKIE["session"]) || empty(get_user_by_session($_COOKIE["session"]
                 <br><br>
                 <input class="roundcorners" type="submit" value="Add">
             </form>
+            <br>
             <a href="/">Back to main</a>
         </center>
     </div>
