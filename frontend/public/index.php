@@ -42,12 +42,12 @@ if (!isset($_COOKIE["session"]) || empty(get_user_by_session($_COOKIE["session"]
         <span><b>Stocks tracked</b>: <?php echo count($USER_STOCKS) ?></span>
         <br>
         <div id="actions-list">
-            <a href='/newstock.php'>Track a new stock</a>
-            <a href='/?clearstocks=true'>Clear tracked stocks</a>
+            <a href='/newstock.php' class="shortlink">Track a new stock</a>
+            <a href='/?clearstocks=true' class="shortlink">Clear tracked stocks</a>
         </div>
         <small>Please select stock from the list below to view its price change
             <br>
-            <select style="width: 120px; height: 50px; font-size: 20px;" onchange="location = '?symbol=' + this.value;">
+            <select style="width: 100%; height: 50px; font-size: 20px; text-align: center;" onchange="location = '?symbol=' + this.value;">
                 <option>--</option>
                 <?php
                 foreach ($USER_STOCKS as $stock) {
