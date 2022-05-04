@@ -2,14 +2,21 @@
 require "sessions.php";
 include_once("db.php");
 
+$STOCK = null;
+
 if (!isset($_COOKIE["session"]) || empty(get_user_by_session($_COOKIE["session"]))) {
     header("Location: /signin.php");
     exit();
 } else {
     $USER = get_user_by_session($_COOKIE["session"]);
-    $USER_STOCKS = run_sql_query("WITH user_stcks AS (SELECT * FROM user_stocks WHERE user_id=$1) SELECT * FROM user_stcks JOIN stocks ON stock_symbol=stocks.symbol", $USER[0]);
+    $USER_STOCKS = fetch_rows("WITH user_stcks AS (SELECT * FROM user_stocks WHERE user_id=$1) SELECT symbol FROM user_stcks JOIN stocks ON stock_symbol=stocks.symbol", $USER[0]);
     if (empty($USER_STOCKS)) {
         $USER_STOCKS = array();
+    }
+
+    # If some stock is in query params, open it
+    if (isset($_GET["symbol"]) && run_sql_query("SELECT EXISTS (SELECT * FROM stocks WHERE symbol = $1)", $_GET["symbol"])[0] == 't') {
+        echo "Symbol selected";
     }
 }
 ?>
@@ -28,16 +35,17 @@ if (!isset($_COOKIE["session"]) || empty(get_user_by_session($_COOKIE["session"]
         <br>
         <small>Please select stock from the list below to view its price change
             <br>
-            <a href='/newstock.php'>Track a new stock</button>
-                <br>
-                <select>
-                    <option>--</option>
-                    <?php
-                    foreach ($USER_STOCKS as $stock) {
-                        echo "<option>$stock[0]</option>";
-                    }
-                    ?>
-                </select>
+            <a href='/newstock.php'>Track a new stock</a>
+            <br>
+            <br>
+            <select style="width: 120px; height: 50px; font-size: 20px;" onchange="location = '?symbol=' + this.value;">
+                <option>--</option>
+                <?php
+                foreach ($USER_STOCKS as $stock) {
+                    echo "<option value='" . $stock["symbol"] . "'>" . $stock["symbol"] . "</a></option>";
+                }
+                ?>
+            </select>
     </div>
 
 
