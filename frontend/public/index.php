@@ -24,6 +24,13 @@ if (!isset($_COOKIE["session"]) || empty(get_user_by_session($_COOKIE["session"]
         header("Location: /");
         exit();
     }
+
+    if (isset($_GET["signout"])) {
+        unset($_COOKIE['session']);
+        setcookie('session', '', time() - 3600, '/');
+        header("Location: /signin.php");
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -38,7 +45,7 @@ if (!isset($_COOKIE["session"]) || empty(get_user_by_session($_COOKIE["session"]
 <body>
     <div id="header">
         <h1 style="margin: 5px;">Exchange <span id='hawk'>Hawk</span></h1>
-        <span><b>User</b>: <?php echo $USER[0] ?></span><br>
+        <span><b>User</b>: <?php echo $USER[0] ?></span>&nbsp;(<a href="/?signout=true">Sign out</a>)<br>
         <span><b>Stocks tracked</b>: <?php echo count($USER_STOCKS) ?></span>
         <br>
         <div id="actions-list">
